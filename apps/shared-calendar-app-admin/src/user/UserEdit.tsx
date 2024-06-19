@@ -11,6 +11,7 @@ import {
 } from "react-admin";
 
 import { CalendarIntegrationTitle } from "../calendarIntegration/CalendarIntegrationTitle";
+import { MeetingTitle } from "../meeting/MeetingTitle";
 import { TeamMemberTitle } from "../teamMember/TeamMemberTitle";
 import { ROLES_OPTIONS } from "../user/RolesOptions";
 
@@ -29,6 +30,14 @@ export const UserEdit = (props: EditProps): React.ReactElement => {
         <TextInput label="Email" source="email" type="email" />
         <TextInput label="First Name" source="firstName" />
         <TextInput label="Last Name" source="lastName" />
+        <ReferenceArrayInput
+          source="meetings"
+          reference="Meeting"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={MeetingTitle} />
+        </ReferenceArrayInput>
         <TextInput label="name" source="name" />
         <PasswordInput label="Password" source="password" />
         <SelectArrayInput

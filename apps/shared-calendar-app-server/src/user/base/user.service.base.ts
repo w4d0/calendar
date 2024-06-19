@@ -15,6 +15,7 @@ import {
   Prisma,
   User as PrismaUser,
   CalendarIntegration as PrismaCalendarIntegration,
+  Meeting as PrismaMeeting,
   TeamMember as PrismaTeamMember,
 } from "@prisma/client";
 
@@ -76,6 +77,17 @@ export class UserServiceBase {
         where: { id: parentId },
       })
       .calendarIntegrations(args);
+  }
+
+  async findMeetings(
+    parentId: string,
+    args: Prisma.MeetingFindManyArgs
+  ): Promise<PrismaMeeting[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .meetings(args);
   }
 
   async findTeamMembers(

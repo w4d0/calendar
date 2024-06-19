@@ -28,6 +28,8 @@ import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
 import { CalendarIntegrationFindManyArgs } from "../../calendarIntegration/base/CalendarIntegrationFindManyArgs";
 import { CalendarIntegration } from "../../calendarIntegration/base/CalendarIntegration";
+import { MeetingFindManyArgs } from "../../meeting/base/MeetingFindManyArgs";
+import { Meeting } from "../../meeting/base/Meeting";
 import { TeamMemberFindManyArgs } from "../../teamMember/base/TeamMemberFindManyArgs";
 import { TeamMember } from "../../teamMember/base/TeamMember";
 import { UserService } from "../user.service";
@@ -153,6 +155,26 @@ export class UserResolverBase {
       parent.id,
       args
     );
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Meeting], { name: "meetings" })
+  @nestAccessControl.UseRoles({
+    resource: "Meeting",
+    action: "read",
+    possession: "any",
+  })
+  async findMeetings(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: MeetingFindManyArgs
+  ): Promise<Meeting[]> {
+    const results = await this.service.findMeetings(parent.id, args);
 
     if (!results) {
       return [];

@@ -14,6 +14,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { CalendarIntegrationCreateNestedManyWithoutUsersInput } from "./CalendarIntegrationCreateNestedManyWithoutUsersInput";
 import { ValidateNested, IsOptional, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { MeetingCreateNestedManyWithoutUsersInput } from "./MeetingCreateNestedManyWithoutUsersInput";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
@@ -65,6 +66,18 @@ class UserCreateInput {
     nullable: true,
   })
   lastName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => MeetingCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => MeetingCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => MeetingCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  meetings?: MeetingCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,

@@ -4,6 +4,7 @@ import { TeamMemberModule } from "./teamMember/teamMember.module";
 import { EventModule } from "./event/event.module";
 import { CalendarIntegrationModule } from "./calendarIntegration/calendarIntegration.module";
 import { UserModule } from "./user/user.module";
+import { MeetingModule } from "./meeting/meeting.module";
 import { CalendarModuleModule } from "./CalendarModule/calendarmodule.module";
 import { EventModuleModule } from "./EventModule/eventmodule.module";
 import { TeamModuleModule } from "./TeamModule/teammodule.module";
@@ -30,6 +31,7 @@ import { AuthModule } from "./auth/auth.module";
     EventModule,
     CalendarIntegrationModule,
     UserModule,
+    MeetingModule,
     CalendarModuleModule,
     EventModuleModule,
     TeamModuleModule,

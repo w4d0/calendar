@@ -29,6 +29,9 @@ import { UserUpdateInput } from "./UserUpdateInput";
 import { CalendarIntegrationFindManyArgs } from "../../calendarIntegration/base/CalendarIntegrationFindManyArgs";
 import { CalendarIntegration } from "../../calendarIntegration/base/CalendarIntegration";
 import { CalendarIntegrationWhereUniqueInput } from "../../calendarIntegration/base/CalendarIntegrationWhereUniqueInput";
+import { MeetingFindManyArgs } from "../../meeting/base/MeetingFindManyArgs";
+import { Meeting } from "../../meeting/base/Meeting";
+import { MeetingWhereUniqueInput } from "../../meeting/base/MeetingWhereUniqueInput";
 import { TeamMemberFindManyArgs } from "../../teamMember/base/TeamMemberFindManyArgs";
 import { TeamMember } from "../../teamMember/base/TeamMember";
 import { TeamMemberWhereUniqueInput } from "../../teamMember/base/TeamMemberWhereUniqueInput";
@@ -310,6 +313,112 @@ export class UserControllerBase {
   ): Promise<void> {
     const data = {
       calendarIntegrations: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/meetings")
+  @ApiNestedQuery(MeetingFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Meeting",
+    action: "read",
+    possession: "any",
+  })
+  async findMeetings(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Meeting[]> {
+    const query = plainToClass(MeetingFindManyArgs, request.query);
+    const results = await this.service.findMeetings(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        description: true,
+        endTime: true,
+        id: true,
+        location: true,
+        startTime: true,
+        title: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/meetings")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async connectMeetings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: MeetingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      meetings: {
+        connect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/meetings")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async updateMeetings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: MeetingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      meetings: {
+        set: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/meetings")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectMeetings(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: MeetingWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      meetings: {
         disconnect: body,
       },
     };
